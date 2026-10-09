@@ -5,8 +5,17 @@ export enum Training {
 }
 
 export enum PhoneModes {
+    MENU = "menu",
+    ALL = "all",
     WORLD = "world",
     USA = "usa",
+}
+
+export enum PhoneModeString {
+    MENU = "menu",
+    ALL = "All",
+    WORLD = "World",
+    USA = "USA",
 }
 
 export enum FlagsModes {

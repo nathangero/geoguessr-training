@@ -15,14 +15,14 @@
       <tr>
         <th class="text-center">
           <button 
-            class="bg-amber-500 hover:bg-amber-700 text-white p-2 rounded-xl"
+            class="bg-amber-500 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
             onclick={() => training = Training.PHONE}>
             Phone Codes
           </button>
         </th>
         <th class="text-center">
           <button 
-            class="bg-amber-500 hover:bg-amber-700 text-white p-2 rounded-xl"
+            class="bg-amber-500 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
             onclick={() => training = Training.FLAGS}>
             Country Flags
           </button>
@@ -35,14 +35,14 @@
 {#if training === Training.PHONE} 
 <PhoneCodes />
 <button 
-  class="bg-red-500 hover:bg-red-700 text-white p-2 rounded-xl mx-auto block mt-4"
+  class="border-2 border-red-500 hover:bg-red-500 text-white px-4 py-2 rounded-xl mx-auto block mt-4"
   onclick={() => training = Training.MENU}>
   Exit Game
 </button>
 {:else if training === Training.FLAGS} 
 <CountryFlags />
 <button 
-  class="bg-red-500 hover:bg-red-700 text-white p-2 rounded-xl mx-auto block mt-4"
+  class="border-2 border-red-500 hover:bg-red-500 text-white px-4 py-2 rounded-xl mx-auto block mt-4"
   onclick={() => training = Training.MENU}>
   Exit Game
 </button>
