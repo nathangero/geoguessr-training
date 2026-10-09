@@ -296,3 +296,9 @@ code {
     border-right-color: var(--border);
   }
 }
+
+
+/* Additions by me */
+button {
+  cursor: pointer;
+} 
