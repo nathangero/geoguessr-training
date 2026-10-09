@@ -4,5 +4,5 @@ import { defineConfig } from 'vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [svelte()],
-  base: '/geoguessr-training/'
+  base: process.env.NODE_ENV === 'production' ? '/geoguessr-training/' : '/'
 })
