@@ -1,20 +1,44 @@
 <script lang="ts">
+  import { countryCodes, nanpCodes, usaCodes, type PhoneNumberCode } from './area-codes';
   import { PhoneModes } from './enums'
   
   let phoneMode: PhoneModes = $state(PhoneModes.MENU)
   let isPlaying: Boolean = $state(false)
+  let codes: PhoneNumberCode[] = $state([])
 
   const getModeString = (): string => {
     switch (phoneMode) {
       case PhoneModes.ALL:
+        loadAll()
         return "All"
       case PhoneModes.WORLD:
+        loadWorld()
         return "World"
+      case PhoneModes.NANP:
+        loadNanp()
+        return "NANP"
       case PhoneModes.USA:
+        loadUsa()
         return "USA"
       default:
         return "Menu"
     }
+  }
+
+  const loadAll = () => {
+    codes.concat(countryCodes, nanpCodes)
+  }
+
+  const loadWorld = () => {
+    codes.concat(countryCodes)
+  }
+
+  const loadNanp = () => {
+    codes.concat(nanpCodes)
+  }
+
+  const loadUsa = () => {
+    codes.concat(usaCodes)
   }
 
   const changeMode = (mode: PhoneModes) => {
@@ -22,7 +46,6 @@
     isPlaying = !isPlaying;
   }
 
-  
 </script>
 
 <h2>Phone Codes</h2>
@@ -43,6 +66,13 @@
         class="bg-amber-500 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
         onclick={() => changeMode(PhoneModes.WORLD)}>
         World
+      </button>
+    </th>
+    <th class="text-center">
+      <button 
+        class="bg-amber-500 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
+        onclick={() => changeMode(PhoneModes.NANP)}>
+        NANP
       </button>
     </th>
     <th class="text-center">

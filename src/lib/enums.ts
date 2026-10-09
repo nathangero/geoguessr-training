@@ -8,6 +8,7 @@ export enum PhoneModes {
     MENU = "menu",
     ALL = "all",
     WORLD = "world",
+    NANP = "nanp",
     USA = "usa",
 }
 
