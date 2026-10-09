@@ -10,8 +10,10 @@ export type PhoneNumberCode = {
   locations: string[];
 };
 
-export const areaCodes: PhoneNumberCode[] = [
+/** COUNTRY CODES */
+export const countryCodes: PhoneNumberCode[] = [
   { countryCode: "+1", country: "Canada", locations: ["Canada"] },
+  { countryCode: "+1", country: "USA", locations: ["USA"] },
   { countryCode: "+7", country: "Russia", locations: ["Russia"] },
   { countryCode: "+20", country: "Egypt", locations: ["Egypt"] },
   { countryCode: "+27", country: "South Africa", locations: ["South Africa"] },
@@ -244,6 +246,11 @@ export const areaCodes: PhoneNumberCode[] = [
   { countryCode: "+1876", country: "Jamaica", locations: ["Jamaica"] },
   { countryCode: "+1939", country: "Puerto Rico", locations: ["Puerto Rico"] },
   { countryCode: "+4779", country: "Svalbard and Jan Mayen", locations: ["Svalbard and Jan Mayen"] },
+];
+
+
+/** NANP SPECIFIC */
+export const usaCodes: PhoneNumberCode[] = [
   { countryCode: "+1", country: "NANP", areaCode: "201", locations: ["Jersey City", "Bayonne", "Bergenfield", "New Jersey"] },
   { countryCode: "+1", country: "NANP", areaCode: "202", locations: ["Washington", "Washington", "DC"] },
   { countryCode: "+1", country: "NANP", areaCode: "203", locations: ["Bridgeport", "Danbury", "East Haven", "Connecticut"] },
