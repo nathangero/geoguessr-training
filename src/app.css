@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+/* Color scheme https://coolors.co/fe9a00-004777-a30000-00afb5-dff8eb */
+
 :root {
   --text: #6b6375;
   --text-h: #08060d;

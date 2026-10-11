@@ -1,7 +1,9 @@
 <script lang="ts">
   import { countryCodes, nanpCodes, usaCodes, type PhoneNumberCode } from './area-codes';
-  import { PhoneModes } from './enums'
+  import { Modes, PhoneModes, PlayerState } from './enums'
   
+  let {playerState, mode}: {playerState: PlayerState, mode: Modes} = $props();
+
   let phoneMode: PhoneModes = $state(PhoneModes.MENU);
   let isPlaying: Boolean = $state(false);
   let codes: PhoneNumberCode[] = $state([]);
@@ -37,8 +39,8 @@
     codes = usaCodes;
   }
 
-  const changeMode = (mode: PhoneModes) => {
-    phoneMode = mode;
+  const changeMode = (selection: PhoneModes) => {
+    phoneMode = selection;
     isPlaying = !isPlaying;
     if (!isPlaying) return;
 
@@ -58,11 +60,13 @@
       default:
         codes = []; // Clear the array
     }
+
+    playerState = PlayerState.PLAY;
   }
 
 </script>
 
-<h2>Phone Codes</h2>
+<h2>Phone Codes {#if mode === Modes.TRAINING}(Training){/if}</h2>
 
 {#if !isPlaying}
 <table class="mx-auto w-full max-w-xl table-fixed border-separate border-spacing-x-16">

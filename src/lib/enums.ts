@@ -1,3 +1,10 @@
+// Player state
+export enum PlayerState {
+    IDLE = "idle",
+    MODE = "mode",
+    PLAY = "play",
+}
+
 /// Menu selection
 export enum Menus {
     MENU = "menu",
@@ -8,6 +15,7 @@ export enum Menus {
 /// Mode Selection
 export enum Modes {
     IDLE = "idle",
+    SELECT = "select",
     TRAINING = "training",
     GAME = "game",
 }
