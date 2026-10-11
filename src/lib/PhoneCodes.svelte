@@ -92,7 +92,7 @@
 <table class="mx-auto w-full max-w-xl table-fixed border-separate border-spacing-x-16">
   <thead>
     <tr>
-    <th class="text-center">
+    <!-- <th class="text-center">
       <button 
         class="bg-amber-500 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
         class:bg-amber-700={phoneMode === PhoneModes.ALL}
@@ -107,7 +107,7 @@
         onclick={() => changeMode(PhoneModes.WORLD)}>
         World
       </button>
-    </th>
+    </th> -->
     <th class="text-center">
       <button 
         class="bg-amber-500 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
