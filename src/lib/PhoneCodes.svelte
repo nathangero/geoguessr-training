@@ -5,7 +5,6 @@
   let {playerState, mode}: {playerState: PlayerState, mode: Modes} = $props();
 
   let phoneMode: PhoneModes = $state(PhoneModes.MENU);
-  let isPlaying: Boolean = $state(false);
   let codes: PhoneNumberCode[] = $state([]);
 
   const getModeString = (): string => {
@@ -41,8 +40,8 @@
 
   const changeMode = (selection: PhoneModes) => {
     phoneMode = selection;
-    isPlaying = !isPlaying;
-    if (!isPlaying) return;
+    playerState = PlayerState.PLAY;
+    if (playerState !== PlayerState.PLAY) return;
 
     switch (phoneMode) {
       case PhoneModes.ALL:
@@ -61,14 +60,14 @@
         codes = []; // Clear the array
     }
 
-    playerState = PlayerState.PLAY;
+    
   }
 
 </script>
 
 <h2>Phone Codes {#if mode === Modes.TRAINING}(Training){/if}</h2>
 
-{#if !isPlaying}
+{#if playerState !== PlayerState.PLAY}
 <table class="mx-auto w-full max-w-xl table-fixed border-separate border-spacing-x-16">
   <thead>
     <tr>
@@ -106,7 +105,7 @@
 {/if}
 
 
-{#if isPlaying}
+{#if playerState === PlayerState.PLAY}
 <button 
   class="border-2 border-amber-500 hover:bg-amber-500 text-white px-4 py-2 rounded-xl mx-auto block my-4"
   onclick={() => changeMode(PhoneModes.MENU)}>
