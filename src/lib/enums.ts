@@ -1,9 +1,18 @@
-export enum Training {
+/// Menu selection
+export enum Menus {
     MENU = "menu",
     PHONE = "phone",
     FLAGS = "flags",
 }
 
+/// Mode Selection
+export enum Modes {
+    IDLE = "idle",
+    TRAINING = "training",
+    GAME = "game",
+}
+
+/// Phone code selection
 export enum PhoneModes {
     MENU = "menu",
     ALL = "all",
@@ -12,6 +21,7 @@ export enum PhoneModes {
     USA = "usa",
 }
 
+/// Phone mode string
 export enum PhoneModeString {
     MENU = "menu",
     ALL = "All",
@@ -19,6 +29,7 @@ export enum PhoneModeString {
     USA = "USA",
 }
 
+/// Flags mode selection
 export enum FlagsModes {
     WORLD = "world",
     USA = "usa",
