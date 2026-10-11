@@ -6,6 +6,7 @@
 
   let phoneMode: PhoneModes = $state(PhoneModes.MENU);
   let codes: PhoneNumberCode[] = $state([]);
+  let locations: {[key: string]: string} = $state({}); // {location: code}
 
   const getModeString = (): string => {
     switch (phoneMode) {
@@ -60,9 +61,31 @@
         codes = []; // Clear the array
     }
 
-    
+    loadLocations();
   }
 
+  const loadLocations = () => {
+    console.log("Loading locations for mode:", getModeString());
+    const uniqueLocations = new Set<string>();
+    for (const code of codes) {
+      for (const location of code.locations) {
+        uniqueLocations.add(location);
+      }
+    }
+
+    for (const location of uniqueLocations) {
+      locations[location] = location;
+    }
+  }
+
+  const onSearch = (input: string) => {
+    // Check if num first digit is a number or a +
+    if (parseInt(input[0])) {
+      // return codeToLocations[input];
+    } else {
+      // Search by location
+    }
+  }
 </script>
 
 <!-- {#if playerState !== PlayerState.PLAY} -->
@@ -112,10 +135,10 @@
 
   {#if mode === Modes.TRAINING}
   <section id="training-phone">
-    <p>You'll be tested on the following: </p>
+    
     <br />
       
-      <table class="mx-auto  border-separate border-spacing-x-16 border-spacing-y-2">
+      <table class="mx-auto border-separate border-spacing-x-16 border-spacing-y-2">
         <thead>
           <tr>
             <th class="text-left">Code</th>
