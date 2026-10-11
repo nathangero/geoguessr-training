@@ -40,7 +40,7 @@
 
   const changeMode = (selection: PhoneModes) => {
     phoneMode = selection;
-    playerState = PlayerState.PLAY;
+    playerState = selection === PhoneModes.MENU ? PlayerState.MODE : PlayerState.PLAY;
     if (playerState !== PlayerState.PLAY) return;
 
     switch (phoneMode) {
@@ -65,15 +65,14 @@
 
 </script>
 
-<h2>Phone Codes {#if mode === Modes.TRAINING}(Training){/if}</h2>
-
-{#if playerState !== PlayerState.PLAY}
+<!-- {#if playerState !== PlayerState.PLAY} -->
 <table class="mx-auto w-full max-w-xl table-fixed border-separate border-spacing-x-16">
   <thead>
     <tr>
     <th class="text-center">
       <button 
         class="bg-amber-500 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
+        class:bg-amber-700={phoneMode === PhoneModes.ALL}
         onclick={() => changeMode(PhoneModes.ALL)}>
         All
       </button>
@@ -81,6 +80,7 @@
     <th class="text-center">
       <button 
         class="bg-amber-500 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
+        class:bg-amber-700={phoneMode === PhoneModes.WORLD}
         onclick={() => changeMode(PhoneModes.WORLD)}>
         World
       </button>
@@ -88,6 +88,7 @@
     <th class="text-center">
       <button 
         class="bg-amber-500 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
+        class:bg-amber-700={phoneMode === PhoneModes.NANP}
         onclick={() => changeMode(PhoneModes.NANP)}>
         NANP
       </button>
@@ -95,6 +96,7 @@
     <th class="text-center">
       <button 
         class="bg-amber-500 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
+        class:bg-amber-700={phoneMode === PhoneModes.USA}
         onclick={() => changeMode(PhoneModes.USA)}>
         USA
       </button>
@@ -102,44 +104,57 @@
     </tr>
   </thead>
 </table>
-{/if}
+<!-- {/if} -->
 
+<br />
 
 {#if playerState === PlayerState.PLAY}
-<button 
-  class="border-2 border-amber-500 hover:bg-amber-500 text-white px-4 py-2 rounded-xl mx-auto block my-4"
-  onclick={() => changeMode(PhoneModes.MENU)}>
-  Reselect Mode
-</button>
 
-<section id="training-phone">
-  <p>You selected "{getModeString()}" Mode</p>
-  <p>You'll be tested on the following: </p>
-  <br />
-    
-    <table class="mx-auto  border-separate border-spacing-x-16">
-      <thead>
-        <tr>
-          <th>Code</th>
-          <th>Location</th>
-        </tr>
-        {#each codes as code}
+  {#if mode === Modes.TRAINING}
+  <section id="training-phone">
+    <p>You'll be tested on the following: </p>
+    <br />
+      
+      <table class="mx-auto  border-separate border-spacing-x-16 border-spacing-y-2">
+        <thead>
           <tr>
-            {#if code.country === "NANP"}
-              {#if phoneMode === PhoneModes.ALL}
-                <th class="text-center">{code.countryCode} {code.areaCode}</th>
-              {:else}
-                <th class="text-center">{code.areaCode}</th>
-              {/if}
-              <th class="text-left">{code.locations.join(", ")}</th> 
-            {:else}
-              <th class="text-center">{code.countryCode}</th>
-              <th class="text-center">{code.country}</th> 
+            <th class="text-left">Code</th>
+            <th class="text-left">Location</th>
+            {#if phoneMode !== PhoneModes.WORLD}
+            <th class="text-left">Country/Province</th>
             {/if}
           </tr>
-          
-        {/each}
-      </thead>
-    </table>
-</section>
+          {#each codes as code}
+            <tr>
+              {#if code.country === "NANP"}
+                {#if phoneMode === PhoneModes.ALL}
+                  <th class="text-center">{code.countryCode} {code.areaCode}</th>
+                {:else}
+                  <th class="text-center">{code.areaCode}</th>
+                {/if}
+                <th class="text-left">{code.locations.slice(0, code.locations.length - 1).join(", ")}</th> 
+                <th class="text-left">{code.locations.slice(code.locations.length - 1, code.locations.length).join(", ")}</th> 
+              {:else}
+                <th class="text-center">{code.countryCode}</th>
+                {#if phoneMode !== PhoneModes.WORLD}
+                <th class="text-center">{code.country}</th> 
+                {/if}
+
+              {/if}
+            </tr>
+            
+          {/each}
+        </thead>
+      </table>
+  </section>
+  {/if}
+
+  {#if mode === Modes.GAME}
+  <section id="game-phone">
+    <p>Games coming soon</p>
+    <br />
+    
+  </section>
+  {/if}
+
 {/if}
