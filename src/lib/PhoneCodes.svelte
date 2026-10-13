@@ -4,7 +4,7 @@
 
   let {playerState, mode}: {playerState: PlayerState, mode: Modes} = $props();
 
-  let phoneMode: PhoneModes = $state(PhoneModes.MENU);
+  let phoneMode: PhoneModes = $state(PhoneModes.ALL);
   let codes: PhoneNumberCode[] = $state([]);
 
   let searchQuery: string = $state("");
@@ -144,6 +144,19 @@
   }
 
 
+  const pinSearchToTop = (input: HTMLElement) => {
+    if (!window.matchMedia("(max-width: 640px)").matches) return;
+    const top = window.scrollY + input.getBoundingClientRect().top;
+    window.scrollTo({ top, behavior: "auto" });
+  };
+
+  const onSearchFocus = (e: FocusEvent) => {
+    const input = e.currentTarget as HTMLElement;
+    pinSearchToTop(input);
+    requestAnimationFrame(() => pinSearchToTop(input));
+    window.setTimeout(() => pinSearchToTop(input), 350);
+  };
+
   const onSearch = (e: Event) => {
     const input = (e.target as HTMLInputElement).value;
     searchQuery = "";
@@ -238,7 +251,7 @@
   {#if mode === Modes.TRAINING}
   <section id="training-phone">
     <br />
-    <input id="search-phone-codes" class="text-center w-full max-w-xl box-border p-2 rounded-xl border-2 border-black text-black focus:outline-none dark:border-white dark:text-white" type="text" placeholder="Search by code or location" oninput={(e) => onSearch(e)} />
+    <input id="search-phone-codes" class="text-center w-full max-w-xl box-border p-2 rounded-xl border-2 border-black text-black focus:outline-none dark:border-white dark:text-white" type="text" placeholder="Search by code or location" onfocus={onSearchFocus} oninput={(e) => onSearch(e)} />
     <br /><br />
       
     {#if searchQuery !== ""}

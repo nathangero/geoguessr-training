@@ -210,6 +210,15 @@ section+.menu-nav {
   box-sizing: border-box;
 }
 
+@media (max-width: 640px) {
+  #search-phone-codes:focus {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--bg);
+  }
+}
+
 .codes-table {
   width: max-content;
   max-width: min(100%, 56rem);
