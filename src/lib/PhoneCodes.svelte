@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { worldCodes, nanpCodes, usaCodes, codeToLocations, locationToCode, type PhoneNumberCode } from './area-codes';
+  import { worldCodes, nanpCodes, usaCodes, locationToCode, type PhoneNumberCode } from './area-codes';
   import { Modes, PhoneModes, PlayerState } from './enums'
   const typingDelay = 300; // Need?
 
@@ -11,6 +11,7 @@
 
   let searchQuery: string = $state("");
   let searchResult: PhoneNumberCode[] = $state([]);
+  let searchResultLocations: string[] = $state([]); // List of locations
   let isPhoneCode: boolean = $state(false);
 
   const getModeString = (): string => {
@@ -123,6 +124,40 @@
   }
 
 
+  /// TODO:
+  const binarySearchLocation = (list: string[]): string[] => {
+    let left = 0;
+    let right = list.length;
+
+    // First index whose prefix is >= the query
+    while (left < right) {
+      const mid = Math.floor((left + right) / 2);
+      const prefix = list[mid];
+      if (prefix < searchQuery) {
+        left = mid + 1;
+      } else {
+        right = mid;
+      }
+    }
+
+    const leftBoundary = left;
+    right = list.length;
+
+    // First index whose prefix is > the query
+    while (left < right) {
+      const mid = Math.floor((left + right) / 2);
+      const prefix = list[mid];
+      if (prefix <= searchQuery) {
+        left = mid + 1;
+      } else {
+        right = mid;
+      }
+    }
+
+    return list.slice(leftBoundary, left);
+  }
+
+
   const onSearch = (e: Event) => {
     const input = (e.target as HTMLInputElement).value;
     searchQuery = "";
@@ -177,7 +212,7 @@
       }
     } else {
       isPhoneCode = false;
-      // searchResult = locationToCode[input];
+      searchResultLocations = binarySearchLocation(Object.keys(locationToCode));
     }
   }
 </script>
@@ -278,7 +313,17 @@
         </thead>
       </table>
       {:else}
-        <p>Location</p>
+        {#each Object.keys(locationToCode) as location}
+          <table class="mx-auto border-separate border-spacing-x-16 border-spacing-y-2">
+            <thead>
+                <tr>
+                  <th class="text-left">Location</th>
+                  <th class="text-left">Code</th>
+                </tr>
+                <!-- SHOW RESULTS -->
+            </thead>
+          </table>
+        {/each}
       {/if}
 
     {:else}
