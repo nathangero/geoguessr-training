@@ -244,7 +244,7 @@
     {#if searchQuery !== ""}
       {#if isPhoneCode}
       <h3 class="text-center"><span class="font-bold">{searchResult.length} {isPhoneCode ? "Phone Code" : "Location"}</span> RESULTS:</h3>
-      <table class="codes-table">
+      <table class="codes-table" class:area-codes={phoneMode === PhoneModes.NANP || phoneMode === PhoneModes.USA}>
         <thead>
           {#if phoneMode === PhoneModes.NANP || phoneMode === PhoneModes.USA}
             <tr>
@@ -253,7 +253,7 @@
               {#if phoneMode === PhoneModes.USA}
                 <th class="text-left">State</th>
               {:else}
-                <th class="text-left">State/Province/Country</th>
+                <th class="text-left">State/Province</th>
               {/if}
             </tr>
             {#each searchResult as code}
@@ -309,7 +309,7 @@
       {/if}
 
     {:else}
-      <table class="codes-table">
+      <table class="codes-table" class:area-codes={phoneMode === PhoneModes.NANP || phoneMode === PhoneModes.USA}>
         <thead>
           {#if phoneMode === PhoneModes.NANP || phoneMode === PhoneModes.USA}
             <tr>
@@ -318,7 +318,7 @@
               {#if phoneMode === PhoneModes.USA}
                 <th class="text-left">State</th>
               {:else}
-                <th class="text-left">State/Province/Country</th>
+                <th class="text-left">State/Province</th>
               {/if}
             </tr>
             {#each codes as code}

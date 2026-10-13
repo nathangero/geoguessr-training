@@ -211,39 +211,76 @@ section+.menu-nav {
 }
 
 .codes-table {
+  width: max-content;
+  max-width: min(100%, 56rem);
   margin-inline: auto;
-  border-collapse: separate;
-  border-spacing: 4rem 0.5rem;
+  border-collapse: collapse;
+  table-layout: auto;
   text-align: left;
 }
 
 .codes-table th {
+  font-size: 1.20rem;
   font-weight: 600;
   vertical-align: top;
+  padding: 0.25rem 0 0.25rem 4rem;
+}
+
+.codes-table:not(.cols-2) th:first-child {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.codes-table.area-codes th:first-child {
+  padding-right: 1.5rem;
+}
+
+.codes-table:not(.cols-2) th:nth-child(3) {
+  width: 1%;
+  max-width: 11rem;
+}
+
+.codes-table th:first-child {
+  padding-left: 0;
+}
+
+.codes-table > thead > tr:first-child > th {
+  border-bottom: 2px solid color-mix(in srgb, currentColor 55%, transparent);
+  padding-bottom: 0.45rem;
 }
 
 @media (max-width: 900px) {
   .codes-table {
     width: 100%;
     max-width: 100%;
-    table-layout: fixed;
-    border-spacing: 0.75rem 0.5rem;
   }
 
   .codes-table th {
-    overflow-wrap: anywhere;
-    word-break: break-word;
-    white-space: normal;
+    overflow-wrap: break-word;
+    padding-left: 0.75rem;
+  }
+
+  .codes-table th:first-child {
+    padding-left: 0;
   }
 }
 
 @media (max-width: 640px) {
-  .codes-table {
-    border-spacing: 0.35rem 0.45rem;
+  .codes-table th {
+    font-size: 1.05rem;
+    line-height: 1.3;
+    padding-left: 0.35rem;
   }
 
-  .codes-table th {
-    font-size: 1.15rem;
-    line-height: 1.3;
+  .codes-table:not(.cols-2) th:nth-child(3) {
+    max-width: 8.5rem;
+  }
+
+  .codes-table.area-codes th:first-child {
+    padding-right: 0.75rem;
+  }
+
+  .codes-table th:first-child {
+    padding-left: 0;
   }
 }
