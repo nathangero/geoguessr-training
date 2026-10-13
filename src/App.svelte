@@ -75,14 +75,14 @@
 {#if playerState === PlayerState.MODE && menu === Menus.PHONE} 
 <PhoneCodes {playerState} {mode} />
 <button 
-  class="border-2 border-red-500 hover:bg-red-500 text-white px-4 py-2 rounded-xl mx-auto block mt-4"
+  class="border-2 border-red-500 hover:bg-red-500 text-black hover:text-white dark:text-white px-4 py-2 rounded-xl mx-auto block mt-4"
   onclick={() => onExit()}>
   Exit Game
 </button>
 {:else if playerState === PlayerState.MODE && menu === Menus.FLAGS} 
 <CountryFlags />
 <button 
-  class="border-2 border-red-500 hover:bg-red-500 text-white px-4 py-2 rounded-xl mx-auto block mt-4"
+  class="border-2 border-red-500 hover:bg-red-500 text-black hover:text-white dark:text-white px-4 py-2 rounded-xl mx-auto block mt-4"
   onclick={() => onExit()}>
   Exit Game
 </button>

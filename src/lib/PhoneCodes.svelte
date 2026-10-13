@@ -247,12 +247,12 @@
 
   {#if mode === Modes.TRAINING}
   <section id="training-phone">
-    <input class="text-center w-5/6 p-2 rounded-xl" type="text" placeholder="Search by code or location" oninput={(e) => onSearch(e)} />
+    <input id="search-phone-codes" class="text-center w-5/6 p-2 m-2 rounded-xl border-2 border-black text-black focus:outline-none dark:border-white dark:text-white" type="text" placeholder="Search by code or location" oninput={(e) => onSearch(e)} />
     <br /><br />
       
     {#if searchQuery !== ""}
       {#if isPhoneCode}
-      <h3 class="text-center"><span class="font-bold">{searchResult.length}</span> RESULTS:</h3>
+      <h3 class="text-center"><span class="font-bold">{searchResult.length} {isPhoneCode ? "Phone Code" : "Location"}</span> RESULTS:</h3>
       <table class="mx-auto border-separate border-spacing-x-16 border-spacing-y-2">
         <thead>
           {#if phoneMode === PhoneModes.NANP || phoneMode === PhoneModes.USA}
