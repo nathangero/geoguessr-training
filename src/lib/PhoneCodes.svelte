@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { countryCodes, nanpCodes, usaCodes, codeToLocations, locationToCode, type PhoneNumberCode } from './area-codes';
+  import { worldCodes, nanpCodes, usaCodes, codeToLocations, locationToCode, type PhoneNumberCode } from './area-codes';
   import { Modes, PhoneModes, PlayerState } from './enums'
   const typingDelay = 300; // Need?
 
@@ -29,11 +29,11 @@
   }
 
   const loadAll = () => {
-    codes = [...countryCodes, ...nanpCodes];
+    codes = [...worldCodes, ...nanpCodes];
   }
 
   const loadWorld = () => {
-    codes = countryCodes.sort((a, b) => a.countryCode.localeCompare(b.countryCode));
+    codes = worldCodes;
   }
 
   const loadNanp = () => {
@@ -46,9 +46,8 @@
 
   const changeMode = (selection: PhoneModes) => {
     phoneMode = selection;
-    console.log("phone mode:", phoneMode);
     playerState = selection === PhoneModes.MENU ? PlayerState.MODE : PlayerState.PLAY;
-    console.log("playerstate:", playerState);
+
     if (playerState !== PlayerState.PLAY) return;
     codes = []; // Clear the array
 
@@ -73,7 +72,7 @@
   }
 
   const loadLocations = () => {
-    console.log("Loading locations for mode:", getModeString());
+    // console.log("Loading locations for mode:", getModeString());
     const uniqueLocations = new Set<string>();
     for (const code of codes) {
       for (const location of code.locations) {
@@ -86,20 +85,19 @@
     }
   }
 
-  const codePrefix = (index: number, isWorld: boolean): string => {
-    const prefix = isWorld ? codes[index]?.countryCode : codes[index]?.areaCode;
+  const codePrefix = (list: PhoneNumberCode[], index: number, isWorld: boolean): string => {
+    const prefix = isWorld ? list[index]?.countryCode : list[index]?.areaCode;
     return prefix?.slice(0, searchQuery.length) ?? "";
   }
 
-  const binarySearchPhoneCodes = (searchQuery: string, isWorld: boolean): PhoneNumberCode[] => {
+  const binarySearchPhoneCodes = (list: PhoneNumberCode[], searchQuery: string, isWorld: boolean): PhoneNumberCode[] => {
     let left = 0;
-    let right = codes.length;
+    let right = list.length;
 
-    console.log("FINDING LEFT")
     // First index whose prefix is >= the query
     while (left < right) {
       const mid = Math.floor((left + right) / 2);
-      const prefix = codePrefix(mid, isWorld);
+      const prefix = codePrefix(list, mid, isWorld);
       if (prefix < searchQuery) {
         left = mid + 1;
       } else {
@@ -108,13 +106,12 @@
     }
 
     const leftBoundary = left;
-    right = codes.length;
+    right = list.length;
 
-    console.log("FINDING RIGHT ")
     // First index whose prefix is > the query
     while (left < right) {
       const mid = Math.floor((left + right) / 2);
-      const prefix = codePrefix(mid, isWorld);
+      const prefix = codePrefix(list, mid, isWorld);
       if (prefix <= searchQuery) {
         left = mid + 1;
       } else {
@@ -122,8 +119,8 @@
       }
     }
 
-    return codes.slice(leftBoundary, left);
-}
+    return list.slice(leftBoundary, left);
+  }
 
 
   const onSearch = (e: Event) => {
@@ -135,14 +132,49 @@
     }
 
     const isWorld = (phoneMode === PhoneModes.WORLD || phoneMode === PhoneModes.ALL) ? true : false;
+    let list: PhoneNumberCode[];
+
+    if (phoneMode === PhoneModes.USA) {
+      list = usaCodes.sort((a, b) => {
+        const areaA = a?.areaCode ?? "";
+        const areaB = b?.areaCode ?? "";
+        return areaA.localeCompare(areaB);
+      });
+
+    } else if (phoneMode === PhoneModes.NANP) {
+      list = nanpCodes.sort((a, b) => {
+        const areaA = a?.areaCode ?? "";
+        const areaB = b?.areaCode ?? "";
+        return areaA.localeCompare(areaB);
+      });
+
+    } else if (phoneMode === PhoneModes.WORLD) {
+      list = worldCodes.sort((a, b) => a.countryCode.localeCompare(b.countryCode));
+    } else {
+      list = [];
+    }
     
-    console.log("Searching for:", input, `in the ${isWorld ? "WORLD" : "NANP"}`);
+    // console.log("Searching for:", input, `in the ${isWorld ? "WORLD" : "NANP OR USA"}`);
     searchQuery = input;
 
     // Check if num first digit is a number or a +
     if (parseInt(input[0])) {
       isPhoneCode = true;
-      searchResult = binarySearchPhoneCodes(searchQuery, isWorld);
+
+      if (phoneMode === PhoneModes.ALL) {
+        // Search two lists and combine both results
+        list = nanpCodes.sort((a, b) => {
+          const areaA = a?.areaCode ?? "";
+          const areaB = b?.areaCode ?? "";
+          return areaA.localeCompare(areaB);
+        });
+        let resultNanp = binarySearchPhoneCodes(list, searchQuery, false);
+        let resultWorld = binarySearchPhoneCodes(worldCodes.sort((a, b) => a.countryCode.localeCompare(b.countryCode)), searchQuery, true);
+
+        searchResult = [...resultWorld, ...resultNanp];
+      } else {
+        searchResult = binarySearchPhoneCodes(list, searchQuery, isWorld);
+      }
     } else {
       isPhoneCode = false;
       // searchResult = locationToCode[input];

@@ -11,7 +11,7 @@ export type PhoneNumberCode = {
 };
 
 /** COUNTRY CODES */
-export const countryCodes: PhoneNumberCode[] = [
+export const worldCodes: PhoneNumberCode[] = [
   { countryCode: "1", country: "Canada", locations: ["Canada"] },
   { countryCode: "1", country: "USA", locations: ["USA"] },
   { countryCode: "7", country: "Russia", locations: ["Russia"] },
