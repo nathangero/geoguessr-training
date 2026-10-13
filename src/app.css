@@ -187,16 +187,13 @@ section + .menu-nav {
 
 .menu-row {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 0.75rem;
-}
+  flex-direction: row;
+  justify-content: space-between;
+  width: 75%;
+  margin-inline: auto;
 
-@media (min-width: 641px) {
-  .menu-row {
-    justify-content: space-evenly;
-    gap: 2rem 4rem;
+  @media (max-width: 480px) {
+    width: 100%;
   }
 }
 
@@ -205,11 +202,6 @@ section + .menu-nav {
   max-width: 100%;
   margin-inline: auto;
   box-sizing: border-box;
-}
-
-#search-phone-codes {
-  display: block;
-  margin: 0.5rem auto 0;
 }
 
 .codes-table {

@@ -237,6 +237,7 @@
 
   {#if mode === Modes.TRAINING}
   <section id="training-phone">
+    <br />
     <input id="search-phone-codes" class="text-center w-full max-w-xl box-border p-2 rounded-xl border-2 border-black text-black focus:outline-none dark:border-white dark:text-white" type="text" placeholder="Search by code or location" oninput={(e) => onSearch(e)} />
     <br /><br />
       
