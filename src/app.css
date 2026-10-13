@@ -74,10 +74,12 @@ h1 {
   font-size: 56px;
   letter-spacing: -1.68px;
   margin: 32px 0;
+
   @media (max-width: 1024px) {
     font-size: 36px;
     margin: 20px 0;
   }
+
   @media (max-width: 640px) {
     font-size: 1.7rem;
     letter-spacing: -0.04em;
@@ -86,6 +88,7 @@ h1 {
     padding-inline: 8px;
   }
 }
+
 h2 {
   font-size: 24px;
   line-height: 118%;
@@ -138,9 +141,10 @@ p {
   border-top: 1px solid var(--border);
   text-align: left;
 
-  & > div {
+  &>div {
     flex: 1 1 0;
     padding: 32px;
+
     @media (max-width: 1024px) {
       padding: 24px 20px;
     }
@@ -181,7 +185,7 @@ button {
   gap: 1rem;
 }
 
-section + .menu-nav {
+section+.menu-nav {
   margin-top: 1rem;
 }
 
@@ -240,4 +244,4 @@ section + .menu-nav {
     font-size: 0.85rem;
     line-height: 1.3;
   }
-} 
+}

@@ -266,12 +266,12 @@
           {:else if phoneMode === PhoneModes.WORLD}
             <tr>
               <th class="text-left">Code</th>
-              <th class="text-left">Country/Province</th>
+              <th class="text-right">Country/Province</th>
             </tr>
             {#each searchResult as code}
               <tr>
                 <th class="text-left">+{code.countryCode} {code.areaCode}</th>
-                <th class="text-left">{code.locations.slice(code.locations.length - 1, code.locations.length).join(", ")}</th>   
+                <th class="text-right">{code.locations.slice(code.locations.length - 1, code.locations.length).join(", ")}</th>   
               </tr>
             {/each}
           {:else}
@@ -292,7 +292,7 @@
       </table>
       {:else}
       <h3 class="text-center"><span class="font-bold">{searchResultLocations.length}</span> RESULTS:</h3>
-        <table class="codes-table">
+        <table class="codes-table cols-2">
           <thead>
             <tr>
               <th class="text-left">Location</th>
@@ -331,12 +331,12 @@
           {:else if phoneMode === PhoneModes.WORLD}
             <tr>
               <th class="text-left">Code</th>
-              <th class="text-left">Country/Province</th>
+              <th class="text-right">Country/Province</th>
             </tr>
             {#each codes as code}
               <tr>
                 <th class="text-left">+{code.countryCode} {code.areaCode}</th>
-                <th class="text-left">{code.locations.slice(code.locations.length - 1, code.locations.length).join(", ")}</th>   
+                <th class="text-right">{code.locations.slice(code.locations.length - 1, code.locations.length).join(", ")}</th>   
               </tr>
             {/each}
           {:else}
