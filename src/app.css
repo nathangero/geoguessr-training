@@ -210,8 +210,50 @@ section+.menu-nav {
   box-sizing: border-box;
 }
 
+.search-field {
+  position: relative;
+  width: 100%;
+  max-width: 36rem;
+  margin-inline: auto;
+}
+
+#search-phone-codes {
+  padding-right: 2.5rem;
+}
+
+.search-clear {
+  position: absolute;
+  top: 50%;
+  right: 0.45rem;
+  transform: translateY(-50%);
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
 @media (max-width: 640px) {
-  #search-phone-codes:focus {
+  #training-phone:has(#search-phone-codes.is-pinned) {
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    box-sizing: border-box;
+    padding: 8px 12px 12px;
+    overflow: auto;
+    background: var(--bg);
+  }
+
+  #training-phone:has(#search-phone-codes.is-pinned) > br:first-child {
+    display: none;
+  }
+
+  #training-phone:has(#search-phone-codes.is-pinned) .search-field {
     position: sticky;
     top: 0;
     z-index: 5;

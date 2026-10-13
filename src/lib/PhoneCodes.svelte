@@ -29,7 +29,6 @@
 
   const loadAll = () => {
     codes = [...worldCodes, ...nanpCodes];
-
   }
 
   const loadWorld = () => {
@@ -69,6 +68,9 @@
     }
 
   }
+
+  // Load all codes on mount
+  changeMode(PhoneModes.ALL);
 
   const codePrefix = (list: PhoneNumberCode[], index: number, isWorld: boolean): string => {
     const prefix = isWorld ? list[index]?.countryCode : list[index]?.areaCode;
@@ -144,17 +146,61 @@
   }
 
 
-  const pinSearchToTop = (input: HTMLElement) => {
-    if (!window.matchMedia("(max-width: 640px)").matches) return;
-    const top = window.scrollY + input.getBoundingClientRect().top;
-    window.scrollTo({ top, behavior: "auto" });
+  let searchPinned = $state(false);
+  let savedScroll = 0;
+
+  const placeSearchSheet = () => {
+    const sheet = document.getElementById("training-phone");
+    if (!sheet) return;
+    const viewport = window.visualViewport;
+    const top = viewport?.offsetTop ?? 0;
+    const height = viewport?.height ?? window.innerHeight;
+    sheet.style.top = `${top}px`;
+    sheet.style.height = `${height}px`;
   };
 
-  const onSearchFocus = (e: FocusEvent) => {
-    const input = e.currentTarget as HTMLElement;
-    pinSearchToTop(input);
-    requestAnimationFrame(() => pinSearchToTop(input));
-    window.setTimeout(() => pinSearchToTop(input), 350);
+  const keepSearchSheet = () => {
+    if (!searchPinned) return;
+    placeSearchSheet();
+    window.scrollTo({ top: savedScroll, behavior: "auto" });
+  };
+
+  const onSearchFocus = () => {
+    if (!window.matchMedia("(max-width: 640px)").matches) return;
+    savedScroll = window.scrollY;
+    searchPinned = true;
+    window.visualViewport?.removeEventListener("resize", keepSearchSheet);
+    window.visualViewport?.removeEventListener("scroll", keepSearchSheet);
+    window.visualViewport?.addEventListener("resize", keepSearchSheet);
+    window.visualViewport?.addEventListener("scroll", keepSearchSheet);
+    requestAnimationFrame(keepSearchSheet);
+    window.setTimeout(keepSearchSheet, 350);
+  };
+
+  const restoreSearch = () => {
+    searchPinned = false;
+    const sheet = document.getElementById("training-phone");
+    if (sheet) {
+      sheet.style.top = "";
+      sheet.style.height = "";
+    }
+    window.visualViewport?.removeEventListener("resize", keepSearchSheet);
+    window.visualViewport?.removeEventListener("scroll", keepSearchSheet);
+    window.scrollTo({ top: savedScroll, behavior: "auto" });
+  };
+
+  const onSearchBlur = () => {
+    restoreSearch();
+  };
+
+  const clearSearch = () => {
+    searchQuery = "";
+    searchResult = [];
+    searchResultLocations = [];
+    const input = document.getElementById("search-phone-codes") as HTMLInputElement | null;
+    if (input) input.value = "";
+    restoreSearch();
+    input?.blur();
   };
 
   const onSearch = (e: Event) => {
@@ -251,7 +297,12 @@
   {#if mode === Modes.TRAINING}
   <section id="training-phone">
     <br />
-    <input id="search-phone-codes" class="text-center w-full max-w-xl box-border p-2 rounded-xl border-2 border-black text-black focus:outline-none dark:border-white dark:text-white" type="text" placeholder="Search by code or location" onfocus={onSearchFocus} oninput={(e) => onSearch(e)} />
+    <div class="search-field">
+      <input id="search-phone-codes" class="text-center w-full box-border p-2 rounded-xl border-2 border-black text-black focus:outline-none dark:border-white dark:text-white" class:is-pinned={searchPinned} type="text" placeholder="Search by code or location" onfocus={onSearchFocus} onblur={onSearchBlur} oninput={(e) => onSearch(e)} />
+      {#if searchQuery !== ""}
+        <button type="button" class="search-clear" aria-label="Clear search" onpointerdown={(e) => e.preventDefault()} onclick={clearSearch}>×</button>
+      {/if}
+    </div>
     <br /><br />
       
     {#if searchQuery !== ""}
