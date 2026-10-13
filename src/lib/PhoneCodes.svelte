@@ -1,17 +1,15 @@
 <script lang="ts">
-  import { worldCodes, nanpCodes, usaCodes, locationToCode, type PhoneNumberCode } from './area-codes';
+  import { worldCodes, nanpCodes, usaCodes, locationToCodeAll, type PhoneNumberCode, type LocationCode } from './area-codes';
   import { Modes, PhoneModes, PlayerState } from './enums'
-  const typingDelay = 300; // Need?
 
   let {playerState, mode}: {playerState: PlayerState, mode: Modes} = $props();
 
   let phoneMode: PhoneModes = $state(PhoneModes.MENU);
   let codes: PhoneNumberCode[] = $state([]);
-  let locations: {[key: string]: string} = $state({}); // {location: code}
 
   let searchQuery: string = $state("");
   let searchResult: PhoneNumberCode[] = $state([]);
-  let searchResultLocations: string[] = $state([]); // List of locations
+  let searchResultLocations: LocationCode[] = $state([]); // List of locations
   let isPhoneCode: boolean = $state(false);
 
   const getModeString = (): string => {
@@ -31,6 +29,7 @@
 
   const loadAll = () => {
     codes = [...worldCodes, ...nanpCodes];
+
   }
 
   const loadWorld = () => {
@@ -69,21 +68,6 @@
         codes = []; // Clear the array
     }
 
-    loadLocations();
-  }
-
-  const loadLocations = () => {
-    // console.log("Loading locations for mode:", getModeString());
-    const uniqueLocations = new Set<string>();
-    for (const code of codes) {
-      for (const location of code.locations) {
-        uniqueLocations.add(location);
-      }
-    }
-
-    for (const location of uniqueLocations) {
-      locations[location] = location;
-    }
   }
 
   const codePrefix = (list: PhoneNumberCode[], index: number, isWorld: boolean): string => {
@@ -124,16 +108,17 @@
   }
 
 
-  /// TODO:
-  const binarySearchLocation = (list: string[]): string[] => {
+  /// Binary search for locations
+  const binarySearchLocation = (list: LocationCode[]): LocationCode[] => {
     let left = 0;
     let right = list.length;
 
     // First index whose prefix is >= the query
     while (left < right) {
       const mid = Math.floor((left + right) / 2);
-      const prefix = list[mid];
-      if (prefix < searchQuery) {
+      const prefix = list[mid].location.slice(0, searchQuery.length).toLowerCase();
+
+      if (prefix < searchQuery.toLowerCase()) {
         left = mid + 1;
       } else {
         right = mid;
@@ -146,8 +131,9 @@
     // First index whose prefix is > the query
     while (left < right) {
       const mid = Math.floor((left + right) / 2);
-      const prefix = list[mid];
-      if (prefix <= searchQuery) {
+      const prefix = list[mid].location.slice(0, searchQuery.length).toLowerCase();
+
+      if (prefix <= searchQuery.toLowerCase()) {
         left = mid + 1;
       } else {
         right = mid;
@@ -168,6 +154,7 @@
 
     const isWorld = (phoneMode === PhoneModes.WORLD || phoneMode === PhoneModes.ALL) ? true : false;
     let list: PhoneNumberCode[];
+    let listLocations: LocationCode[];
 
     if (phoneMode === PhoneModes.USA) {
       list = usaCodes.sort((a, b) => {
@@ -175,14 +162,12 @@
         const areaB = b?.areaCode ?? "";
         return areaA.localeCompare(areaB);
       });
-
     } else if (phoneMode === PhoneModes.NANP) {
       list = nanpCodes.sort((a, b) => {
         const areaA = a?.areaCode ?? "";
         const areaB = b?.areaCode ?? "";
         return areaA.localeCompare(areaB);
       });
-
     } else if (phoneMode === PhoneModes.WORLD) {
       list = worldCodes.sort((a, b) => a.countryCode.localeCompare(b.countryCode));
     } else {
@@ -192,7 +177,7 @@
     // console.log("Searching for:", input, `in the ${isWorld ? "WORLD" : "NANP OR USA"}`);
     searchQuery = input;
 
-    // Check if num first digit is a number or a +
+    // Check if num first digit is a number
     if (parseInt(input[0])) {
       isPhoneCode = true;
 
@@ -212,7 +197,7 @@
       }
     } else {
       isPhoneCode = false;
-      searchResultLocations = binarySearchLocation(Object.keys(locationToCode));
+      searchResultLocations = binarySearchLocation(locationToCodeAll.sort((a, b) => a.location.localeCompare(b.location)));
     }
   }
 </script>
@@ -266,13 +251,14 @@
     <br /><br />
       
     {#if searchQuery !== ""}
-      <p>RESULTS:</p>
       {#if isPhoneCode}
+      <h3 class="text-center"><span class="font-bold">{searchResult.length}</span> RESULTS:</h3>
       <table class="mx-auto border-separate border-spacing-x-16 border-spacing-y-2">
         <thead>
           {#if phoneMode === PhoneModes.NANP || phoneMode === PhoneModes.USA}
             <tr>
               <th class="text-left">Code</th>
+              <th class="text-left">Location</th>
               {#if phoneMode === PhoneModes.USA}
                 <th class="text-left">State</th>
               {:else}
@@ -282,6 +268,7 @@
             {#each searchResult as code}
               <tr>
                 <th class="text-left">+{code.countryCode} {code.areaCode}</th>
+                <th class="text-left">{code.locations.slice(0, code.locations.length - 1).join(", ")}</th> 
                 <th class="text-left">{code.locations.slice(code.locations.length - 1, code.locations.length).join(", ")}</th>   
               </tr>
             {/each}
@@ -313,17 +300,21 @@
         </thead>
       </table>
       {:else}
-        {#each Object.keys(locationToCode) as location}
-          <table class="mx-auto border-separate border-spacing-x-16 border-spacing-y-2">
-            <thead>
-                <tr>
-                  <th class="text-left">Location</th>
-                  <th class="text-left">Code</th>
-                </tr>
-                <!-- SHOW RESULTS -->
-            </thead>
-          </table>
-        {/each}
+      <h3 class="text-center"><span class="font-bold">{searchResultLocations.length}</span> RESULTS:</h3>
+        <table class="mx-auto border-separate border-spacing-x-16 border-spacing-y-2">
+          <thead>
+            <tr>
+              <th class="text-left">Location</th>
+              <th class="text-left">Code</th>
+            </tr>
+            {#each searchResultLocations as location}
+              <tr>
+                <th class="text-left">{location.location}</th>
+                <th class="text-left">{location.codes.join(", ")}</th>
+              </tr>
+            {/each}
+          </thead>
+        </table>
       {/if}
 
     {:else}
@@ -332,6 +323,7 @@
           {#if phoneMode === PhoneModes.NANP || phoneMode === PhoneModes.USA}
             <tr>
               <th class="text-left">Code</th>
+              <th class="text-left">Location</th>
               {#if phoneMode === PhoneModes.USA}
                 <th class="text-left">State</th>
               {:else}
@@ -341,6 +333,7 @@
             {#each codes as code}
               <tr>
                 <th class="text-left">+{code.countryCode} {code.areaCode}</th>
+                <th class="text-left">{code.locations.slice(0, code.locations.length - 1).join(", ")}</th> 
                 <th class="text-left">{code.locations.slice(code.locations.length - 1, code.locations.length).join(", ")}</th>   
               </tr>
             {/each}
