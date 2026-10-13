@@ -296,12 +296,12 @@
           <thead>
             <tr>
               <th class="text-left">Location</th>
-              <th class="text-left">Code</th>
+              <th class="text-right">Code</th>
             </tr>
             {#each searchResultLocations as location}
               <tr>
                 <th class="text-left">{location.location}</th>
-                <th class="text-left">{location.codes.join(", ")}</th>
+                <th class="text-right">{location.codes.join(", ")}</th>
               </tr>
             {/each}
           </thead>
