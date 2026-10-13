@@ -25,51 +25,41 @@
   }
 </script>
 
-<section id="">
+<section>
   <h1>Geoguessr Training Room</h1>
 
-  <table class="mx-auto w-full max-w-xl table-fixed border-separate border-spacing-x-16 border-spacing-y-4" class:visible={mode === Modes.IDLE || mode === Modes.SELECT}>
-    <thead>
-      <tr>
-        <th class="text-center">
-          <button 
-            class="bg-amber-500 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
-            class:bg-amber-700={menu === Menus.PHONE}
-            onclick={() => onMenuChange(Menus.PHONE)}>
-            Phone Codes
-          </button>
-        </th>
-        <th class="text-center">
-          <button 
-            class="bg-amber-500 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
-            class:bg-amber-700={menu === Menus.FLAGS}
-            onclick={() => onMenuChange(Menus.FLAGS)}>
-            Country Flags
-          </button>
-        </th>
-      </tr>
-      {#if mode === Modes.SELECT || playerState === PlayerState.MODE || playerState === PlayerState.PLAY}
-        <tr>
-          <th class="text-center">
-            <button 
-              class="bg-amber-500 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
-              class:bg-amber-700={mode === Modes.GAME}
-              onclick={() => onModeChange(Modes.GAME)}>
-              Test Your Might
-            </button>
-          </th>
-          <th class="text-center">
-            <button 
-              class="bg-amber-500 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
-              class:bg-amber-700={mode === Modes.TRAINING}
-              onclick={() => onModeChange(Modes.TRAINING)}>
-              Training
-            </button>
-          </th>
-        </tr>
-      {/if}
-    </thead>
-  </table>
+  <nav class="menu-nav" class:visible={mode === Modes.IDLE || mode === Modes.SELECT}>
+    <div class="menu-row">
+      <button 
+        class="bg-amber-500 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
+        class:bg-amber-700={menu === Menus.PHONE}
+        onclick={() => onMenuChange(Menus.PHONE)}>
+        Phone Codes
+      </button>
+      <button 
+        class="bg-amber-500 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
+        class:bg-amber-700={menu === Menus.FLAGS}
+        onclick={() => onMenuChange(Menus.FLAGS)}>
+        Country Flags
+      </button>
+    </div>
+    {#if mode === Modes.SELECT || playerState === PlayerState.MODE || playerState === PlayerState.PLAY}
+      <div class="menu-row">
+        <button 
+          class="bg-amber-500 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
+          class:bg-amber-700={mode === Modes.GAME}
+          onclick={() => onModeChange(Modes.GAME)}>
+          Test Your Might
+        </button>
+        <button 
+          class="bg-amber-500 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
+          class:bg-amber-700={mode === Modes.TRAINING}
+          onclick={() => onModeChange(Modes.TRAINING)}>
+          Training
+        </button>
+      </div>
+    {/if}
+  </nav>
 </section>
 
 {#if playerState === PlayerState.MODE && menu === Menus.PHONE} 

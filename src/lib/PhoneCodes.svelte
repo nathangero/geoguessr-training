@@ -202,44 +202,34 @@
   }
 </script>
 
-<table class="mx-auto w-full max-w-xl table-fixed border-separate border-spacing-x-16">
-  <thead>
-    <tr>
-    <th class="text-center">
-      <button 
-        class="bg-amber-500 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
-        class:bg-amber-700={phoneMode === PhoneModes.ALL}
-        onclick={() => changeMode(PhoneModes.ALL)}>
-        All
-      </button>
-    </th>
-    <th class="text-center">
-      <button 
-        class="bg-amber-500 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
-        class:bg-amber-700={phoneMode === PhoneModes.WORLD}
-        onclick={() => changeMode(PhoneModes.WORLD)}>
-        World
-      </button>
-    </th>
-    <th class="text-center">
-      <button 
-        class="bg-amber-500 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
-        class:bg-amber-700={phoneMode === PhoneModes.NANP}
-        onclick={() => changeMode(PhoneModes.NANP)}>
-        NANP
-      </button>
-    </th>
-    <th class="text-center">
-      <button 
-        class="bg-amber-500 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
-        class:bg-amber-700={phoneMode === PhoneModes.USA}
-        onclick={() => changeMode(PhoneModes.USA)}>
-        USA
-      </button>
-    </th>
-    </tr>
-  </thead>
-</table>
+<nav class="menu-nav">
+  <div class="menu-row">
+    <button 
+      class="bg-amber-500 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
+      class:bg-amber-700={phoneMode === PhoneModes.ALL}
+      onclick={() => changeMode(PhoneModes.ALL)}>
+      All
+    </button>
+    <button 
+      class="bg-amber-500 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
+      class:bg-amber-700={phoneMode === PhoneModes.WORLD}
+      onclick={() => changeMode(PhoneModes.WORLD)}>
+      World
+    </button>
+    <button 
+      class="bg-amber-500 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
+      class:bg-amber-700={phoneMode === PhoneModes.NANP}
+      onclick={() => changeMode(PhoneModes.NANP)}>
+      NANP
+    </button>
+    <button 
+      class="bg-amber-500 hover:bg-amber-700 text-white px-4 py-2 rounded-xl"
+      class:bg-amber-700={phoneMode === PhoneModes.USA}
+      onclick={() => changeMode(PhoneModes.USA)}>
+      USA
+    </button>
+  </div>
+</nav>
 
 <br />
 
@@ -247,13 +237,13 @@
 
   {#if mode === Modes.TRAINING}
   <section id="training-phone">
-    <input id="search-phone-codes" class="text-center w-5/6 p-2 m-2 rounded-xl border-2 border-black text-black focus:outline-none dark:border-white dark:text-white" type="text" placeholder="Search by code or location" oninput={(e) => onSearch(e)} />
+    <input id="search-phone-codes" class="text-center w-full max-w-xl box-border p-2 rounded-xl border-2 border-black text-black focus:outline-none dark:border-white dark:text-white" type="text" placeholder="Search by code or location" oninput={(e) => onSearch(e)} />
     <br /><br />
       
     {#if searchQuery !== ""}
       {#if isPhoneCode}
       <h3 class="text-center"><span class="font-bold">{searchResult.length} {isPhoneCode ? "Phone Code" : "Location"}</span> RESULTS:</h3>
-      <table class="mx-auto border-separate border-spacing-x-16 border-spacing-y-2">
+      <table class="codes-table">
         <thead>
           {#if phoneMode === PhoneModes.NANP || phoneMode === PhoneModes.USA}
             <tr>
@@ -301,7 +291,7 @@
       </table>
       {:else}
       <h3 class="text-center"><span class="font-bold">{searchResultLocations.length}</span> RESULTS:</h3>
-        <table class="mx-auto border-separate border-spacing-x-16 border-spacing-y-2">
+        <table class="codes-table">
           <thead>
             <tr>
               <th class="text-left">Location</th>
@@ -318,7 +308,7 @@
       {/if}
 
     {:else}
-      <table class="mx-auto border-separate border-spacing-x-16 border-spacing-y-2">
+      <table class="codes-table">
         <thead>
           {#if phoneMode === PhoneModes.NANP || phoneMode === PhoneModes.USA}
             <tr>
