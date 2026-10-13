@@ -33,15 +33,15 @@
   }
 
   const loadWorld = () => {
-    codes = countryCodes;
+    codes = countryCodes.sort((a, b) => a.countryCode.localeCompare(b.countryCode));
   }
 
   const loadNanp = () => {
-    codes = nanpCodes;
+    codes = nanpCodes.sort((a, b) => a.countryCode.localeCompare(b.countryCode));
   }
 
   const loadUsa = () => {
-    codes = usaCodes;
+    codes = usaCodes.sort((a, b) => a.countryCode.localeCompare(b.countryCode));
   }
 
   const changeMode = (selection: PhoneModes) => {
@@ -50,6 +50,7 @@
     playerState = selection === PhoneModes.MENU ? PlayerState.MODE : PlayerState.PLAY;
     console.log("playerstate:", playerState);
     if (playerState !== PlayerState.PLAY) return;
+    codes = []; // Clear the array
 
     switch (phoneMode) {
       case PhoneModes.ALL:
@@ -86,18 +87,20 @@
   }
 
   const codePrefix = (index: number, isWorld: boolean): string => {
-    const value = isWorld ? codes[index]?.countryCode : codes[index]?.areaCode;
-    return value?.slice(0, searchQuery.length) ?? "";
+    const prefix = isWorld ? codes[index]?.countryCode : codes[index]?.areaCode;
+    return prefix?.slice(0, searchQuery.length) ?? "";
   }
 
-  const binarySearchPhoneCodes = (isWorld: boolean): PhoneNumberCode[] => {
+  const binarySearchPhoneCodes = (searchQuery: string, isWorld: boolean): PhoneNumberCode[] => {
     let left = 0;
     let right = codes.length;
 
+    console.log("FINDING LEFT")
     // First index whose prefix is >= the query
     while (left < right) {
       const mid = Math.floor((left + right) / 2);
-      if (codePrefix(mid, isWorld) < searchQuery) {
+      const prefix = codePrefix(mid, isWorld);
+      if (prefix < searchQuery) {
         left = mid + 1;
       } else {
         right = mid;
@@ -107,10 +110,12 @@
     const leftBoundary = left;
     right = codes.length;
 
+    console.log("FINDING RIGHT ")
     // First index whose prefix is > the query
     while (left < right) {
       const mid = Math.floor((left + right) / 2);
-      if (codePrefix(mid, isWorld) <= searchQuery) {
+      const prefix = codePrefix(mid, isWorld);
+      if (prefix <= searchQuery) {
         left = mid + 1;
       } else {
         right = mid;
@@ -118,7 +123,7 @@
     }
 
     return codes.slice(leftBoundary, left);
-  }
+}
 
 
   const onSearch = (e: Event) => {
@@ -129,14 +134,15 @@
       return;
     }
 
-    let isWorld = input[0] === "+" ? true : false;
-
-    console.log("Searching for:", input);
+    const isWorld = (phoneMode === PhoneModes.WORLD || phoneMode === PhoneModes.ALL) ? true : false;
+    
+    console.log("Searching for:", input, `in the ${isWorld ? "WORLD" : "NANP"}`);
     searchQuery = input;
+
     // Check if num first digit is a number or a +
-    if (parseInt(input[0]) || input[0] === "+") {
+    if (parseInt(input[0])) {
       isPhoneCode = true;
-      searchResult = binarySearchPhoneCodes(isWorld);
+      searchResult = binarySearchPhoneCodes(searchQuery, isWorld);
     } else {
       isPhoneCode = false;
       // searchResult = locationToCode[input];
@@ -190,10 +196,10 @@
   {#if mode === Modes.TRAINING}
   <section id="training-phone">
     <input class="text-center w-5/6 p-2 rounded-xl" type="text" placeholder="Search by code or location" oninput={(e) => onSearch(e)} />
-    <br />
+    <br /><br />
       
     {#if searchQuery !== ""}
-      <p>Searching for: {searchQuery}</p>
+      <p>RESULTS:</p>
       {#if isPhoneCode}
       <table class="mx-auto border-separate border-spacing-x-16 border-spacing-y-2">
         <thead>
@@ -244,50 +250,50 @@
       {/if}
 
     {:else}
-    <table class="mx-auto border-separate border-spacing-x-16 border-spacing-y-2">
-      <thead>
-        {#if phoneMode === PhoneModes.NANP || phoneMode === PhoneModes.USA}
-          <tr>
-            <th class="text-left">Code</th>
-            {#if phoneMode === PhoneModes.USA}
-              <th class="text-left">State</th>
-            {:else}
-              <th class="text-left">State/Province/Country</th>
-            {/if}
-          </tr>
-          {#each codes as code}
+      <table class="mx-auto border-separate border-spacing-x-16 border-spacing-y-2">
+        <thead>
+          {#if phoneMode === PhoneModes.NANP || phoneMode === PhoneModes.USA}
             <tr>
-              <th class="text-left">+{code.countryCode} {code.areaCode}</th>
-              <th class="text-left">{code.locations.slice(code.locations.length - 1, code.locations.length).join(", ")}</th>   
+              <th class="text-left">Code</th>
+              {#if phoneMode === PhoneModes.USA}
+                <th class="text-left">State</th>
+              {:else}
+                <th class="text-left">State/Province/Country</th>
+              {/if}
             </tr>
-          {/each}
-        {:else if phoneMode === PhoneModes.WORLD}
-          <tr>
-            <th class="text-left">Code</th>
-            <th class="text-left">Country/Province</th>
-          </tr>
-          {#each codes as code}
+            {#each codes as code}
+              <tr>
+                <th class="text-left">+{code.countryCode} {code.areaCode}</th>
+                <th class="text-left">{code.locations.slice(code.locations.length - 1, code.locations.length).join(", ")}</th>   
+              </tr>
+            {/each}
+          {:else if phoneMode === PhoneModes.WORLD}
             <tr>
-              <th class="text-left">+{code.countryCode} {code.areaCode}</th>
-              <th class="text-left">{code.locations.slice(code.locations.length - 1, code.locations.length).join(", ")}</th>   
+              <th class="text-left">Code</th>
+              <th class="text-left">Country/Province</th>
             </tr>
-          {/each}
-        {:else}
-          <tr>
-            <th class="text-left">Code</th>
-            <th class="text-left">City</th>
-            <th class="text-left">Country/Province/State</th>
-          </tr>
-          {#each codes as code}
+            {#each codes as code}
+              <tr>
+                <th class="text-left">+{code.countryCode} {code.areaCode}</th>
+                <th class="text-left">{code.locations.slice(code.locations.length - 1, code.locations.length).join(", ")}</th>   
+              </tr>
+            {/each}
+          {:else}
             <tr>
-              <th class="text-left">+{code.countryCode} {code.areaCode}</th>
-              <th class="text-left">{code.locations.slice(0, code.locations.length - 1).join(", ")}</th> 
-              <th class="text-left">{code.locations.slice(code.locations.length - 1, code.locations.length).join(", ")}</th>   
+              <th class="text-left">Code</th>
+              <th class="text-left">City</th>
+              <th class="text-left">Country/Province/State</th>
             </tr>
-          {/each}
-        {/if}
-      </thead>
-    </table>
+            {#each codes as code}
+              <tr>
+                <th class="text-left">+{code.countryCode} {code.areaCode}</th>
+                <th class="text-left">{code.locations.slice(0, code.locations.length - 1).join(", ")}</th> 
+                <th class="text-left">{code.locations.slice(code.locations.length - 1, code.locations.length).join(", ")}</th>   
+              </tr>
+            {/each}
+          {/if}
+        </thead>
+      </table>
     {/if}
   </section>
   {/if}
